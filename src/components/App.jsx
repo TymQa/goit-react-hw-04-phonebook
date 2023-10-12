@@ -6,13 +6,20 @@ import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
 import MainTitle from './MainTitle/MainTitle';
 
-const CONTACTS = JSON.parse(localStorage.getItem('CONTACTS'));
+const getContactsFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem('CONTACTS')) ?? [];
+};
+
+const getIsInitializedTemplateFromLocalStorage = () => {
+  const contacts = getContactsFromLocalStorage();
+  return contacts.length > 0;
+};
 
 export const App = () => {
-  const [contacts, setContacts] = useState(CONTACTS ?? []);
+  const [contacts, setContacts] = useState(getContactsFromLocalStorage);
   const [filter, setFilter] = useState('');
   const [isInitializedTemplate, setIsInitializedTemplate] = useState(
-    CONTACTS && CONTACTS.length > 0 ? true : false
+    getIsInitializedTemplateFromLocalStorage
   );
   const [timer, setTimer] = useState(3);
 
@@ -34,12 +41,6 @@ export const App = () => {
       return () => clearInterval(interval);
     }
   }, [timer]);
-  // useEffect(() => {
-  //   window.localStorage.setItem(
-  //     'isInitializedTemplate',
-  //     JSON.stringify(isInitializedTemplate)
-  //   );
-  // }, [isInitializedTemplate]);
 
   useEffect(() => {
     window.localStorage.setItem('CONTACTS', JSON.stringify(contacts));
